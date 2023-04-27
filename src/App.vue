@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <new-student-form></new-student-form>
-    <student-table></student-table>
+    <new-student-form v-on:student-added="newStudentAdded"></new-student-form>
+    <student-table v-bind:students="students"></student-table>
     <student-message></student-message>
   </div>
 </template>
@@ -17,10 +17,23 @@ export default {
     NewStudentForm,
     StudentMessage,
     StudentTable
+  },
+  data() {
+    return {
+      students:[]
+    }
+  },
+  methods: {
+    newStudentAdded(student) {
+      this.students.push(student)
+      this.students.sort(function(s1, s2) {
+        return s1.name.toLowerCase() < s2.name.toLowerCase() ? -1:1
+      })
+    }
   }
 }
 </script>
 
 <style>
-
+@import "https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
 </style>
