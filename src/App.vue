@@ -1,8 +1,10 @@
 <template>
   <div id="app">
     <new-student-form v-on:student-added="newStudentAdded"></new-student-form>
-    <student-table v-bind:students="students"></student-table>
-    <student-message></student-message>
+    <student-table v-bind:students="students" 
+      v-on:student-arrived-or-left="sAorL"
+      v-on:delete-student="studentDeleted"></student-table>
+    <student-message v-bind:student="mostRecentStudent"></student-message>
   </div>
 </template>
 
@@ -20,7 +22,8 @@ export default {
   },
   data() {
     return {
-      students:[]
+      students:[],
+      mostRecentStudent: {}
     }
   },
   methods: {
@@ -29,6 +32,25 @@ export default {
       this.students.sort(function(s1, s2) {
         return s1.name.toLowerCase() < s2.name.toLowerCase() ? -1:1
       })
+    },
+    sAorL(student, present) {
+      let updateStudent=this.students.find(function(s) {
+        if (s.name==student.name && s.starID==student.starID) {
+          return true;
+        }
+      })
+      if (updateStudent) {
+        updateStudent.present = present
+        this.mostRecentStudent=student
+      }
+    },
+    studentDeleted(student) {
+      this.students=this.students.filter (function(s) {
+        if (s !=student){
+          return true
+        }
+      })
+      this.mostRecentStudent={}
     }
   }
 }
